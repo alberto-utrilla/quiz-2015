@@ -45,3 +45,7 @@ Temporary Items
 
 # My ignores
 node_modules
+npm-debug.log
+quiz.sqlite
+.env
+heroku.log
