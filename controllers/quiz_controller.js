@@ -30,7 +30,6 @@ exports.show = function(req, res) {
 //GET /quizes/:id/answer
 exports.answer = function (req, res) {
 	var resultado = 'Incorrecto';
-	console.log("respuesta1 = " + req.query.respuesta);
 	if (req.query.respuesta === req.quiz.respuesta) {
 		resultado = 'Correcto';
 	} 
@@ -98,4 +97,11 @@ exports.update = function(req, res) {
       }     // Redirección HTTP a lista de preguntas (URL relativo)
     }
   );
+};
+
+// DELETE /quizes/:id
+exports.destroy = function(req, res) {
+  req.quiz.destroy().then( function() {
+    res.redirect('/quizes');
+  }).catch(function(error){next(error)});
 };
