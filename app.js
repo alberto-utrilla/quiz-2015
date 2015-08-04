@@ -40,12 +40,35 @@ app.use(function(req, res, next) {
   // guardar path en session.redir para despues de login
   if (!req.path.match(/\/login|\/logout|\/user/)) {
     req.session.redir = req.path;
+    console.log("EALBUTR req.path = " + req.path);
   }
 
-  // Hacer visible req.session en las vistas
-  res.locals.session = req.session;
-  next();
+	//Validar session timeout
+	if (req.session.user) {
+		if (Date.now() - req.session.user.lastRequestTime > 2*60*1000) {
+			delete req.session.user;
+			var errors = req.session.errors || 'Sesión caducada ...';
+			req.session.errors = {};
+			
+			// Hacer visible req.session en las vistas
+  		res.locals.session = req.session;
+  
+			res.render('sessions/new', {errors: errors});
+			
+		} else {
+			req.session.user.lastRequestTime = Date.now();
+			// Hacer visible req.session en las vistas
+	  	res.locals.session = req.session;
+	  	next();
+		}
+	
+	} else {	
+	  // Hacer visible req.session en las vistas
+	  res.locals.session = req.session;
+	  next();
+	}
 });
+
 
 app.use('/', routes);
 
